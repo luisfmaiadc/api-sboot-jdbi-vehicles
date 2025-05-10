@@ -6,38 +6,71 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>3.4.5</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<relativePath/>
 	</parent>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.jdbi</groupId>
+				<artifactId>jdbi3-bom</artifactId>
+				<type>pom</type>
+				<version>3.49.3</version>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
 	<groupId>com.portfolio.luisfmdc</groupId>
 	<artifactId>api-sboot-jdbi-vehicles</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>api-sboot-jdbi-vehicles</name>
 	<description>Demo project for Spring Boot</description>
-	<url/>
-	<licenses>
-		<license/>
-	</licenses>
-	<developers>
-		<developer/>
-	</developers>
-	<scm>
-		<connection/>
-		<developerConnection/>
-		<tag/>
-		<url/>
-	</scm>
+
 	<properties>
 		<java.version>21</java.version>
 	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
+
+		<dependency>
+			<groupId>org.jdbi</groupId>
+			<artifactId>jdbi3-core</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jdbi</groupId>
+			<artifactId>jdbi3-sqlobject</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openapitools</groupId>
+			<artifactId>openapi-generator-maven-plugin</artifactId>
+			<version>7.13.0</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>jakarta.servlet</groupId>
+			<artifactId>jakarta.servlet-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openapitools</groupId>
+			<artifactId>jackson-databind-nullable</artifactId>
+			<version>0.2.6</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.flywaydb</groupId>
 			<artifactId>flyway-core</artifactId>
 		</dependency>
+
 		<dependency>
 			<groupId>org.flywaydb</groupId>
 			<artifactId>flyway-mysql</artifactId>
@@ -48,11 +81,13 @@
 			<artifactId>mysql-connector-j</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
 		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -85,6 +120,31 @@
 						</exclude>
 					</excludes>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.openapitools</groupId>
+				<artifactId>openapi-generator-maven-plugin</artifactId>
+				<version>7.13.0</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<inputSpec>${project.basedir}/src/main/resources/openapi.yaml</inputSpec>
+							<generatorName>spring</generatorName>
+							<apiPackage>com.portfolio.luisfmdc.api</apiPackage>
+							<modelPackage>com.portfolio.luisfmdc.model</modelPackage>
+							<configOptions>
+								<interfaceOnly>true</interfaceOnly>
+								<dateLibrary>java8</dateLibrary>
+								<useJakartaEe>true</useJakartaEe>
+							</configOptions>
+							<generateApiTests>false</generateApiTests>
+							<generateModelTests>false</generateModelTests>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

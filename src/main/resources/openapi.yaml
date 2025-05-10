@@ -1,0 +1,102 @@
+openapi: 3.0.3
+info:
+  title: API de Veículos e Manutenções
+  version: 1.0.0
+  description: API para gerenciamento de veículos e suas manutenções.
+
+servers:
+  - url: http://localhost:8080
+
+paths:
+  /vehicles:
+    post:
+      summary: Cadastra um novo veículo
+      operationId: createVehicle
+      tags:
+        - Vehicle
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VehicleRequest'
+      responses:
+        '201':
+          description: Veículo criado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VehicleResponse'
+
+  /vehicles/{vehicleId}/maintenances:
+    post:
+      summary: Registra uma nova manutenção para um veículo
+      operationId: registerMaintenance
+      tags:
+        - Maintenance
+      parameters:
+        - name: vehicleId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MaintenanceRequest'
+      responses:
+        '201':
+          description: Manutenção registrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MaintenanceResponse'
+
+components:
+  schemas:
+    VehicleRequest:
+      type: object
+      required:
+        - placa
+        - modelo
+        - ano
+      properties:
+        placa:
+          type: string
+        modelo:
+          type: string
+        ano:
+          type: integer
+    VehicleResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        placa:
+          type: string
+        modelo:
+          type: string
+        ano:
+          type: integer
+
+    MaintenanceRequest:
+      type: object
+      required:
+        - description
+      properties:
+        description:
+          type: string
+    MaintenanceResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        idVeiculo:
+          type: integer
+        descricao:
+          type: string
+        data:
+          type: string
+          format: date
