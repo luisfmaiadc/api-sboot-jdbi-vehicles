@@ -10,4 +10,6 @@ public interface VehicleService {
 
     ResponseEntity<VehicleResponse> createVehicle(VehicleRequest vehicleRequest);
     ResponseEntity<MaintenanceResponse> registerMaintenance(Integer vehicleId, MaintenanceRequest maintenanceRequest);
+    ResponseEntity<VehicleResponse> findVehicle(Integer vehicleId);
+    ResponseEntity<MaintenanceResponse> findMaintenance(Integer maintenanceId);
 }

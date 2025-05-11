@@ -1,10 +1,14 @@
 package com.portfolio.luisfmdc.api_sboot_jdbi_vehicles.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Manutencao {
 
     private Integer id;

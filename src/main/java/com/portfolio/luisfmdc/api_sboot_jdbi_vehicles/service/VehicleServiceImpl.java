@@ -1,5 +1,7 @@
 package com.portfolio.luisfmdc.api_sboot_jdbi_vehicles.service;
 
+import com.portfolio.luisfmdc.api_sboot_jdbi_vehicles.mapper.MaintenanceMapper;
+import com.portfolio.luisfmdc.api_sboot_jdbi_vehicles.mapper.VehicleMapper;
 import com.portfolio.luisfmdc.api_sboot_jdbi_vehicles.model.Manutencao;
 import com.portfolio.luisfmdc.api_sboot_jdbi_vehicles.model.Veiculo;
 import com.portfolio.luisfmdc.api_sboot_jdbi_vehicles.repository.VehicleRepository;
@@ -11,7 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
+import java.util.Optional;
 
 @Service
 public class VehicleServiceImpl implements VehicleService {
@@ -24,27 +26,41 @@ public class VehicleServiceImpl implements VehicleService {
 
     @Override
     public ResponseEntity<VehicleResponse> createVehicle(VehicleRequest request) {
-        Veiculo veiculo = new Veiculo(request.getFabricante(), request.getModelo(), request.getPlaca(), request.getAno());
+        Veiculo veiculo = VehicleMapper.toEntity(request);
         Integer id = vehicleRepository.insertNewVehicle(veiculo);
-        VehicleResponse vehicleResponse = new VehicleResponse()
-                .id(id)
-                .fabricante(veiculo.getFabricante())
-                .modelo(veiculo.getModelo())
-                .placa(veiculo.getPlaca())
-                .ano(veiculo.getAnoFabricacao());
-        return ResponseEntity.status(HttpStatus.CREATED).body(vehicleResponse);
+        veiculo.setId(id);
+        return ResponseEntity.status(HttpStatus.CREATED).body(VehicleMapper.toResponse(veiculo));
     }
 
     @Override
     public ResponseEntity<MaintenanceResponse> registerMaintenance(Integer vehicleId, MaintenanceRequest maintenanceRequest) {
-        Manutencao manutencao = new Manutencao(vehicleId, maintenanceRequest.getDescription(), maintenanceRequest.getCost(), LocalDate.now());
+        Manutencao manutencao = MaintenanceMapper.toEntity(vehicleId, maintenanceRequest);
         Integer id = vehicleRepository.insertNewMaintenance(manutencao);
-        MaintenanceResponse maintenanceResponse = new MaintenanceResponse()
-                .id(id)
-                .idVeiculo(manutencao.getIdVeiculo())
-                .descricao(manutencao.getDescricao())
-                .custo(manutencao.getCusto())
-                .data(manutencao.getDataManutencao());
-        return ResponseEntity.status(HttpStatus.CREATED).body(maintenanceResponse);
+        manutencao.setId(id);
+        return ResponseEntity.status(HttpStatus.CREATED).body(MaintenanceMapper.toResponse(manutencao));
+    }
+
+    @Override
+    public ResponseEntity<VehicleResponse> findVehicle(Integer vehicleId) {
+        Optional<Veiculo> optionalVeiculo = vehicleRepository.findVehicle(vehicleId);
+
+        if (optionalVeiculo.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Veiculo veiculo = optionalVeiculo.get();
+        return ResponseEntity.status(HttpStatus.OK).body(VehicleMapper.toResponse(veiculo));
+    }
+
+    @Override
+    public ResponseEntity<MaintenanceResponse> findMaintenance(Integer maintenanceId) {
+        Optional<Manutencao> optionalManutencao = vehicleRepository.findMaintenance(maintenanceId);
+
+        if (optionalManutencao.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Manutencao manutencao = optionalManutencao.get();
+        return ResponseEntity.status(HttpStatus.OK).body(MaintenanceMapper.toResponse(manutencao));
     }
 }

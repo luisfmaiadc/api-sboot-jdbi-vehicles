@@ -28,6 +28,26 @@ paths:
               schema:
                 $ref: '#/components/schemas/VehicleResponse'
 
+  /vehicles/{vehicleId}:
+    get:
+      summary: Obter informações de um veículo
+      operationId: findVehicle
+      tags:
+        - Vehicle
+      parameters:
+        - name: vehicleId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Veículo encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VehicleResponse'
+
   /vehicles/{vehicleId}/maintenances:
     post:
       summary: Registra uma nova manutenção para um veículo
@@ -53,6 +73,25 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MaintenanceResponse'
+    get:
+      summary: Obter informações de uma manutenção
+      operationId: findMaintenance
+      tags:
+        - Maintenance
+      parameters:
+        - name: maintenanceId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Manutenção encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MaintenanceResponse'
+
 
 components:
   schemas:
