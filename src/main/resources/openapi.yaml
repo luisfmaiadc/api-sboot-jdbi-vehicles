@@ -59,13 +59,16 @@ components:
     VehicleRequest:
       type: object
       required:
-        - placa
+        - fabricante
         - modelo
+        - placa
         - ano
       properties:
-        placa:
+        fabricante:
           type: string
         modelo:
+          type: string
+        placa:
           type: string
         ano:
           type: integer
@@ -74,9 +77,11 @@ components:
       properties:
         id:
           type: integer
-        placa:
+        fabricante:
           type: string
         modelo:
+          type: string
+        placa:
           type: string
         ano:
           type: integer
