@@ -90,9 +90,13 @@ components:
       type: object
       required:
         - description
+        - cost
       properties:
         description:
           type: string
+        cost:
+          type: number
+          format: double
     MaintenanceResponse:
       type: object
       properties:
@@ -102,6 +106,9 @@ components:
           type: integer
         descricao:
           type: string
+        custo:
+          type: number
+          format: double
         data:
           type: string
           format: date
