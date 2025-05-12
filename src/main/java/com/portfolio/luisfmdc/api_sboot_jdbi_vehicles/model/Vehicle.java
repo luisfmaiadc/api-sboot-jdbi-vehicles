@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Veiculo {
+public class Vehicle {
 
     private Integer id;
     private String fabricante;
@@ -15,7 +15,7 @@ public class Veiculo {
     private String placa;
     private Integer anoFabricacao;
 
-    public Veiculo(String fabricante, String modelo, String placa, Integer anoFabricacao) {
+    public Vehicle(String fabricante, String modelo, String placa, Integer anoFabricacao) {
         this.fabricante = fabricante;
         this.modelo = modelo;
         this.placa = placa;

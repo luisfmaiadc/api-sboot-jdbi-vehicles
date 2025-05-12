@@ -73,6 +73,29 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MaintenanceResponse'
+
+    get:
+      summary: Pesquisa manutenções por veículo
+      operationId: findMaintenanceByVehicleId
+      tags:
+        - Maintenance
+      parameters:
+        - name: vehicleId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Lista de manutenções do veículo informado
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MaintenanceResponse'
+
+  /vehicles/{maintenanceId}/maintenances:
     get:
       summary: Obter informações de uma manutenção
       operationId: findMaintenance
@@ -148,6 +171,8 @@ components:
         custo:
           type: number
           format: double
+        ativa:
+          type: boolean
         data:
           type: string
           format: date

@@ -9,15 +9,16 @@ import java.time.LocalDate;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Manutencao {
+public class Maintenance {
 
     private Integer id;
     private Integer idVeiculo;
     private String descricao;
     private Double custo;
     private LocalDate dataManutencao;
+    private Boolean ativa;
 
-    public Manutencao(Integer idVeiculo, String descricao, Double custo, LocalDate dataManutencao) {
+    public Maintenance(Integer idVeiculo, String descricao, Double custo, LocalDate dataManutencao) {
         this.idVeiculo = idVeiculo;
         this.descricao = descricao;
         this.custo = custo;

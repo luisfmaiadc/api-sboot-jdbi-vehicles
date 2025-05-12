@@ -1,7 +1,7 @@
 package com.portfolio.luisfmdc.api_sboot_jdbi_vehicles.repository;
 
-import com.portfolio.luisfmdc.api_sboot_jdbi_vehicles.model.Manutencao;
-import com.portfolio.luisfmdc.api_sboot_jdbi_vehicles.model.Veiculo;
+import com.portfolio.luisfmdc.api_sboot_jdbi_vehicles.model.Maintenance;
+import com.portfolio.luisfmdc.api_sboot_jdbi_vehicles.model.Vehicle;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
@@ -19,17 +19,20 @@ public interface VehicleRepository {
 
     @SqlUpdate
     @GetGeneratedKeys
-    int insertNewVehicle(@BindBean Veiculo veiculo);
+    int insertNewVehicle(@BindBean Vehicle vehicle);
 
     @SqlUpdate
     @GetGeneratedKeys
-    int insertNewMaintenance(@BindBean Manutencao manutencao);
+    int insertNewMaintenance(@BindBean Maintenance maintenance);
 
     @SqlQuery
-    @RegisterBeanMapper(Veiculo.class)
-    Optional<Veiculo> findVehicle(@Bind("id") Integer id);
+    @RegisterBeanMapper(Vehicle.class)
+    Optional<Vehicle> findVehicle(@Bind("id") Integer id);
 
     @SqlQuery
-    @RegisterBeanMapper(Manutencao.class)
-    Optional<Manutencao> findMaintenance(@Bind("id") Integer id);
+    @RegisterBeanMapper(Maintenance.class)
+    Optional<Maintenance> findMaintenance(@Bind("id") Integer id);
+
+    @SqlQuery
+    boolean activeMaintenance(@Bind("vehicleId") Integer vehicleId);
 }

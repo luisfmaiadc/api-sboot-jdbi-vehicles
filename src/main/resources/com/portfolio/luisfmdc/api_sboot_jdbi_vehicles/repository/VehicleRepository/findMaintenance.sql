@@ -2,6 +2,7 @@ SELECT id,
     id_veiculo AS idVeiculo,
     descricao,
     custo,
-    data AS dataManutencao
+    data AS dataManutencao,
+    ativa
 FROM TbManutencao
 WHERE id = :id;

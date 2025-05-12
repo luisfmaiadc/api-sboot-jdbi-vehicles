@@ -13,6 +13,7 @@ CREATE TABLE TbManutencao (
     descricao VARCHAR(255) NOT NULL,
     custo DECIMAL(10, 2) NOT NULL,
     data DATE NOT NULL,
+    ativa TINYINT NOT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (id_veiculo) REFERENCES TbVeiculo(id)
 );

@@ -1,6 +1,6 @@
 package com.portfolio.luisfmdc.api_sboot_jdbi_vehicles.mapper;
 
-import com.portfolio.luisfmdc.api_sboot_jdbi_vehicles.model.Manutencao;
+import com.portfolio.luisfmdc.api_sboot_jdbi_vehicles.model.Maintenance;
 import com.portfolio.luisfmdc.model.MaintenanceRequest;
 import com.portfolio.luisfmdc.model.MaintenanceResponse;
 
@@ -8,8 +8,8 @@ import java.time.LocalDate;
 
 public class MaintenanceMapper {
 
-    public static Manutencao toEntity(Integer vehicleId, MaintenanceRequest request) {
-        return new Manutencao(
+    public static Maintenance toEntity(Integer vehicleId, MaintenanceRequest request) {
+        return new Maintenance(
                 vehicleId,
                 request.getDescription(),
                 request.getCost(),
@@ -17,12 +17,13 @@ public class MaintenanceMapper {
         );
     }
 
-    public static MaintenanceResponse toResponse(Manutencao manutencao) {
+    public static MaintenanceResponse toResponse(Maintenance maintenance) {
         return new MaintenanceResponse()
-                .id(manutencao.getId())
-                .idVeiculo(manutencao.getIdVeiculo())
-                .descricao(manutencao.getDescricao())
-                .custo(manutencao.getCusto())
-                .data(manutencao.getDataManutencao());
+                .id(maintenance.getId())
+                .idVeiculo(maintenance.getIdVeiculo())
+                .descricao(maintenance.getDescricao())
+                .custo(maintenance.getCusto())
+                .data(maintenance.getDataManutencao())
+                .ativa(maintenance.getAtiva());
     }
 }
