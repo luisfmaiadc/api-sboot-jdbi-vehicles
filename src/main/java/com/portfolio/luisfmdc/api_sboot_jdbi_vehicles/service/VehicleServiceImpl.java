@@ -13,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -76,5 +78,27 @@ public class VehicleServiceImpl implements VehicleService {
 
         Maintenance maintenance = optionalManutencao.get();
         return ResponseEntity.status(HttpStatus.OK).body(MaintenanceMapper.toResponse(maintenance));
+    }
+
+    @Override
+    public ResponseEntity<List<MaintenanceResponse>> findMaintenanceByVehicleId(Integer vehicleId) {
+        Optional<Vehicle> optionalVehicle = vehicleRepository.findVehicle(vehicleId);
+        if (optionalVehicle.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        List<Maintenance> maintenanceList = vehicleRepository.findMaintenancesByVehicle(vehicleId);
+
+        if (maintenanceList.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        List<MaintenanceResponse> maintenanceResponseList = new ArrayList<>();
+
+        for (Maintenance maintenance : maintenanceList) {
+            maintenanceResponseList.add(MaintenanceMapper.toResponse(maintenance));
+        }
+
+        return ResponseEntity.ok(maintenanceResponseList);
     }
 }

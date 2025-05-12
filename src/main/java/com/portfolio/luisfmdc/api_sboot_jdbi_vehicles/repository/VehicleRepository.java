@@ -11,6 +11,7 @@ import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -35,4 +36,8 @@ public interface VehicleRepository {
 
     @SqlQuery
     boolean activeMaintenance(@Bind("vehicleId") Integer vehicleId);
+
+    @SqlQuery
+    @RegisterBeanMapper(Maintenance.class)
+    List<Maintenance> findMaintenancesByVehicle(@Bind("vehicleId") Integer vehicleId);
 }

@@ -95,7 +95,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/MaintenanceResponse'
 
-  /vehicles/{maintenanceId}/maintenances:
+  /vehicles/maintenances/{maintenanceId}:
     get:
       summary: Obter informações de uma manutenção
       operationId: findMaintenance

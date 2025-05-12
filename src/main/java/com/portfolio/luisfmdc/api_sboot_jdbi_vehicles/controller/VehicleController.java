@@ -9,6 +9,8 @@ import com.portfolio.luisfmdc.model.VehicleResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 public class VehicleController implements VehiclesApi {
 
@@ -36,5 +38,10 @@ public class VehicleController implements VehiclesApi {
     @Override
     public ResponseEntity<MaintenanceResponse> findMaintenance(Integer maintenanceId) {
         return vehicleService.findMaintenance(maintenanceId);
+    }
+
+    @Override
+    public ResponseEntity<List<MaintenanceResponse>> findMaintenanceByVehicleId(Integer vehicleId) {
+        return vehicleService.findMaintenanceByVehicleId(vehicleId);
     }
 }
