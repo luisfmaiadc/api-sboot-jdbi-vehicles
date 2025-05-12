@@ -101,4 +101,17 @@ public class VehicleServiceImpl implements VehicleService {
 
         return ResponseEntity.ok(maintenanceResponseList);
     }
+
+    @Override
+    public ResponseEntity<VehicleResponse> updateVehicle(Integer vehicleId, VehicleRequest vehicleRequest) {
+        Optional<Vehicle> optionalVehicle = vehicleRepository.findVehicle(vehicleId);
+        if (optionalVehicle.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Vehicle vehicle = optionalVehicle.get();
+        vehicle.updateVehicle(vehicleRequest);
+        vehicleRepository.updateVehicle(vehicle);
+        return ResponseEntity.ok(VehicleMapper.toResponse(vehicle));
+    }
 }

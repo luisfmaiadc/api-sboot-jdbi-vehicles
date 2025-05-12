@@ -1,5 +1,6 @@
 package com.portfolio.luisfmdc.api_sboot_jdbi_vehicles.model;
 
+import com.portfolio.luisfmdc.model.VehicleRequest;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,5 +21,23 @@ public class Vehicle {
         this.modelo = modelo;
         this.placa = placa;
         this.anoFabricacao = anoFabricacao;
+    }
+
+    public void updateVehicle(VehicleRequest vehicleRequest) {
+        if (vehicleRequest.getFabricante() != null && !vehicleRequest.getFabricante().isBlank()) {
+            this.fabricante = vehicleRequest.getFabricante();
+        }
+
+        if (vehicleRequest.getModelo() != null && !vehicleRequest.getModelo().isBlank()) {
+            this.modelo = vehicleRequest.getModelo();
+        }
+
+        if (vehicleRequest.getPlaca() != null && !vehicleRequest.getPlaca().isBlank()) {
+            this.placa = vehicleRequest.getPlaca();
+        }
+
+        if (vehicleRequest.getAno() != null) {
+            this.anoFabricacao = vehicleRequest.getAno();
+        }
     }
 }

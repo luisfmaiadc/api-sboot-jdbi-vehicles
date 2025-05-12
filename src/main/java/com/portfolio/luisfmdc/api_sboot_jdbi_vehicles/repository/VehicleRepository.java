@@ -40,4 +40,7 @@ public interface VehicleRepository {
     @SqlQuery
     @RegisterBeanMapper(Maintenance.class)
     List<Maintenance> findMaintenancesByVehicle(@Bind("vehicleId") Integer vehicleId);
+
+    @SqlUpdate
+    void updateVehicle(@BindBean Vehicle vehicle);
 }

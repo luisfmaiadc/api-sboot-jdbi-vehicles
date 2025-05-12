@@ -44,4 +44,9 @@ public class VehicleController implements VehiclesApi {
     public ResponseEntity<List<MaintenanceResponse>> findMaintenanceByVehicleId(Integer vehicleId) {
         return vehicleService.findMaintenanceByVehicleId(vehicleId);
     }
+
+    @Override
+    public ResponseEntity<VehicleResponse> updateVehicle(Integer vehicleId, VehicleRequest vehicleRequest) {
+        return vehicleService.updateVehicle(vehicleId, vehicleRequest);
+    }
 }

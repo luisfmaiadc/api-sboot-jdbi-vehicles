@@ -15,4 +15,5 @@ public interface VehicleService {
     ResponseEntity<VehicleResponse> findVehicle(Integer vehicleId);
     ResponseEntity<MaintenanceResponse> findMaintenance(Integer maintenanceId);
     ResponseEntity<List<MaintenanceResponse>> findMaintenanceByVehicleId(Integer vehicleId);
+    ResponseEntity<VehicleResponse> updateVehicle(Integer vehicleId, VehicleRequest vehicleRequest);
 }
