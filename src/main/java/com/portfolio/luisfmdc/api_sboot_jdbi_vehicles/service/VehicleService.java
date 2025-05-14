@@ -1,9 +1,6 @@
 package com.portfolio.luisfmdc.api_sboot_jdbi_vehicles.service;
 
-import com.portfolio.luisfmdc.model.MaintenanceRequest;
-import com.portfolio.luisfmdc.model.MaintenanceResponse;
-import com.portfolio.luisfmdc.model.VehicleRequest;
-import com.portfolio.luisfmdc.model.VehicleResponse;
+import com.portfolio.luisfmdc.model.*;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -16,4 +13,5 @@ public interface VehicleService {
     ResponseEntity<MaintenanceResponse> findMaintenance(Integer maintenanceId);
     ResponseEntity<List<MaintenanceResponse>> findMaintenanceByVehicleId(Integer vehicleId);
     ResponseEntity<VehicleResponse> updateVehicle(Integer vehicleId, VehicleRequest vehicleRequest);
+    ResponseEntity<MaintenanceResponse> updateMaintenance(Integer maintenanceId, MaintenanceUpdateRequest request);
 }

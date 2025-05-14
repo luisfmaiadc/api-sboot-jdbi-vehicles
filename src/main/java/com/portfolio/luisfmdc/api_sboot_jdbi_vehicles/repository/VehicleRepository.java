@@ -43,4 +43,7 @@ public interface VehicleRepository {
 
     @SqlUpdate
     void updateVehicle(@BindBean Vehicle vehicle);
+
+    @SqlUpdate
+    void updateMaintenance(@BindBean Maintenance maintenance);
 }

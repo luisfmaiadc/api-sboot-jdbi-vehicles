@@ -2,10 +2,7 @@ package com.portfolio.luisfmdc.api_sboot_jdbi_vehicles.controller;
 
 import com.portfolio.luisfmdc.api.VehiclesApi;
 import com.portfolio.luisfmdc.api_sboot_jdbi_vehicles.service.VehicleService;
-import com.portfolio.luisfmdc.model.MaintenanceRequest;
-import com.portfolio.luisfmdc.model.MaintenanceResponse;
-import com.portfolio.luisfmdc.model.VehicleRequest;
-import com.portfolio.luisfmdc.model.VehicleResponse;
+import com.portfolio.luisfmdc.model.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -48,5 +45,10 @@ public class VehicleController implements VehiclesApi {
     @Override
     public ResponseEntity<VehicleResponse> updateVehicle(Integer vehicleId, VehicleRequest vehicleRequest) {
         return vehicleService.updateVehicle(vehicleId, vehicleRequest);
+    }
+
+    @Override
+    public ResponseEntity<MaintenanceResponse> updateMaintenance(Integer maintenanceId, MaintenanceUpdateRequest request) {
+        return vehicleService.updateMaintenance(maintenanceId, request);
     }
 }

@@ -5,10 +5,7 @@ import com.portfolio.luisfmdc.api_sboot_jdbi_vehicles.mapper.VehicleMapper;
 import com.portfolio.luisfmdc.api_sboot_jdbi_vehicles.model.Maintenance;
 import com.portfolio.luisfmdc.api_sboot_jdbi_vehicles.model.Vehicle;
 import com.portfolio.luisfmdc.api_sboot_jdbi_vehicles.repository.VehicleRepository;
-import com.portfolio.luisfmdc.model.MaintenanceRequest;
-import com.portfolio.luisfmdc.model.MaintenanceResponse;
-import com.portfolio.luisfmdc.model.VehicleRequest;
-import com.portfolio.luisfmdc.model.VehicleResponse;
+import com.portfolio.luisfmdc.model.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -113,5 +110,20 @@ public class VehicleServiceImpl implements VehicleService {
         vehicle.updateVehicle(vehicleRequest);
         vehicleRepository.updateVehicle(vehicle);
         return ResponseEntity.ok(VehicleMapper.toResponse(vehicle));
+    }
+
+    @Override
+    public ResponseEntity<MaintenanceResponse> updateMaintenance(Integer maintenanceId, MaintenanceUpdateRequest request) {
+        Optional<Maintenance> optionalMaintenance = vehicleRepository.findMaintenance(maintenanceId);
+        if (optionalMaintenance.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Maintenance maintenance = optionalMaintenance.get();
+        boolean isUpdateValid = maintenance.updateMaintenance(request);
+        if (isUpdateValid) {
+            vehicleRepository.updateMaintenance(maintenance);
+        }
+        return  ResponseEntity.ok(MaintenanceMapper.toResponse(maintenance));
     }
 }
