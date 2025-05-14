@@ -107,8 +107,10 @@ public class VehicleServiceImpl implements VehicleService {
         }
 
         Vehicle vehicle = optionalVehicle.get();
-        vehicle.updateVehicle(vehicleRequest);
-        vehicleRepository.updateVehicle(vehicle);
+        boolean isUpdateValid = vehicle.updateVehicle(vehicleRequest);
+        if (isUpdateValid) {
+            vehicleRepository.updateVehicle(vehicle);
+        }
         return ResponseEntity.ok(VehicleMapper.toResponse(vehicle));
     }
 

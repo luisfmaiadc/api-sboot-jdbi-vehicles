@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Objects;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -23,21 +25,35 @@ public class Vehicle {
         this.anoFabricacao = anoFabricacao;
     }
 
-    public void updateVehicle(VehicleRequest vehicleRequest) {
+    public boolean updateVehicle(VehicleRequest vehicleRequest) {
+        boolean isUpdateValid = false;
         if (vehicleRequest.getFabricante() != null && !vehicleRequest.getFabricante().isBlank()) {
-            this.fabricante = vehicleRequest.getFabricante();
+            if (!Objects.equals(vehicleRequest.getFabricante(), this.fabricante)) {
+                this.fabricante = vehicleRequest.getFabricante();
+                isUpdateValid = true;
+            }
         }
 
         if (vehicleRequest.getModelo() != null && !vehicleRequest.getModelo().isBlank()) {
-            this.modelo = vehicleRequest.getModelo();
+            if (!Objects.equals(vehicleRequest.getModelo(), this.modelo)) {
+                this.modelo = vehicleRequest.getModelo();
+                isUpdateValid = true;
+            }
         }
 
         if (vehicleRequest.getPlaca() != null && !vehicleRequest.getPlaca().isBlank()) {
-            this.placa = vehicleRequest.getPlaca();
+            if (!Objects.equals(vehicleRequest.getPlaca(), this.placa)) {
+                this.placa = vehicleRequest.getPlaca();
+                isUpdateValid = true;
+            }
         }
 
-        if (vehicleRequest.getAno() != null) {
-            this.anoFabricacao = vehicleRequest.getAno();
+        if (vehicleRequest.getAno() != null && vehicleRequest.getAno() >= 1901) {
+            if (!Objects.equals(vehicleRequest.getAno(), this.anoFabricacao)) {
+                this.anoFabricacao = vehicleRequest.getAno();
+                isUpdateValid = true;
+            }
         }
+        return isUpdateValid;
     }
 }

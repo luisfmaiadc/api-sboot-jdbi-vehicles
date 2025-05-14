@@ -1,7 +1,6 @@
 package com.portfolio.luisfmdc.api_sboot_jdbi_vehicles.model;
 
 import com.portfolio.luisfmdc.model.MaintenanceUpdateRequest;
-import com.portfolio.luisfmdc.model.VehicleRequest;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
