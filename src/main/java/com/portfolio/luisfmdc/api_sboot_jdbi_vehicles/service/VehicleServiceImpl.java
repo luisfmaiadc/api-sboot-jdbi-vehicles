@@ -87,7 +87,7 @@ public class VehicleServiceImpl implements VehicleService {
         List<Maintenance> maintenanceList = vehicleRepository.findMaintenancesByVehicle(vehicleId);
 
         if (maintenanceList.isEmpty()) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.noContent().build();
         }
 
         List<MaintenanceResponse> maintenanceResponseList = new ArrayList<>();
