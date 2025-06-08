@@ -10,8 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -34,9 +34,7 @@ public class VehicleServiceImpl implements VehicleService {
     @Override
     public ResponseEntity<MaintenanceResponse> registerMaintenance(Integer vehicleId, MaintenanceRequest maintenanceRequest) {
         boolean isRegisterMaintenanceValid = isRegisterMaintenanceValid(vehicleId);
-        if (!isRegisterMaintenanceValid) {
-            return ResponseEntity.badRequest().build();
-        }
+        if (!isRegisterMaintenanceValid) return ResponseEntity.badRequest().build();
 
         Maintenance maintenance = MaintenanceMapper.toEntity(vehicleId, maintenanceRequest);
         Integer id = vehicleRepository.insertNewMaintenance(maintenance);
@@ -47,9 +45,7 @@ public class VehicleServiceImpl implements VehicleService {
 
     private boolean isRegisterMaintenanceValid(Integer vehicleId) {
         Optional<Vehicle> optionalVeiculo = vehicleRepository.findVehicle(vehicleId);
-        if (optionalVeiculo.isEmpty()) {
-            return false;
-        }
+        if (optionalVeiculo.isEmpty()) return false;
         return !vehicleRepository.activeMaintenance(vehicleId);
     }
 
@@ -57,9 +53,7 @@ public class VehicleServiceImpl implements VehicleService {
     public ResponseEntity<VehicleResponse> findVehicle(Integer vehicleId) {
         Optional<Vehicle> optionalVeiculo = vehicleRepository.findVehicle(vehicleId);
 
-        if (optionalVeiculo.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
+        if (optionalVeiculo.isEmpty()) return ResponseEntity.notFound().build();
 
         Vehicle vehicle = optionalVeiculo.get();
         return ResponseEntity.status(HttpStatus.OK).body(VehicleMapper.toResponse(vehicle));
@@ -69,9 +63,7 @@ public class VehicleServiceImpl implements VehicleService {
     public ResponseEntity<MaintenanceResponse> findMaintenance(Integer maintenanceId) {
         Optional<Maintenance> optionalManutencao = vehicleRepository.findMaintenance(maintenanceId);
 
-        if (optionalManutencao.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
+        if (optionalManutencao.isEmpty()) return ResponseEntity.notFound().build();
 
         Maintenance maintenance = optionalManutencao.get();
         return ResponseEntity.status(HttpStatus.OK).body(MaintenanceMapper.toResponse(maintenance));
@@ -80,52 +72,88 @@ public class VehicleServiceImpl implements VehicleService {
     @Override
     public ResponseEntity<List<MaintenanceResponse>> findMaintenanceByVehicleId(Integer vehicleId) {
         Optional<Vehicle> optionalVehicle = vehicleRepository.findVehicle(vehicleId);
-        if (optionalVehicle.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
+        if (optionalVehicle.isEmpty()) return ResponseEntity.badRequest().build();
 
         List<Maintenance> maintenanceList = vehicleRepository.findMaintenancesByVehicle(vehicleId);
+        if (maintenanceList.isEmpty()) return ResponseEntity.noContent().build();
 
-        if (maintenanceList.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-
-        List<MaintenanceResponse> maintenanceResponseList = new ArrayList<>();
-
-        for (Maintenance maintenance : maintenanceList) {
-            maintenanceResponseList.add(MaintenanceMapper.toResponse(maintenance));
-        }
-
+        List<MaintenanceResponse> maintenanceResponseList = maintenanceList.stream().map(MaintenanceMapper::toResponse).toList();
         return ResponseEntity.ok(maintenanceResponseList);
     }
 
     @Override
     public ResponseEntity<VehicleResponse> updateVehicle(Integer vehicleId, VehicleRequest vehicleRequest) {
         Optional<Vehicle> optionalVehicle = vehicleRepository.findVehicle(vehicleId);
-        if (optionalVehicle.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
+        if (optionalVehicle.isEmpty()) return ResponseEntity.notFound().build();
 
         Vehicle vehicle = optionalVehicle.get();
-        boolean isUpdateValid = vehicle.updateVehicle(vehicleRequest);
+        boolean isUpdateValid = isVehicleUpdateValid(vehicle, vehicleRequest);
         if (isUpdateValid) {
             vehicleRepository.updateVehicle(vehicle);
         }
         return ResponseEntity.ok(VehicleMapper.toResponse(vehicle));
     }
 
+    private boolean isVehicleUpdateValid(Vehicle vehicle, VehicleRequest vehicleRequest) {
+        boolean isUpdateValid = false;
+        if (vehicleRequest.getFabricante() != null && !vehicleRequest.getFabricante().isBlank()) {
+            if (!Objects.equals(vehicleRequest.getFabricante(), vehicle.getFabricante())) {
+                vehicle.setFabricante(vehicleRequest.getFabricante());
+                isUpdateValid = true;
+            }
+        }
+
+        if (vehicleRequest.getModelo() != null && !vehicleRequest.getModelo().isBlank()) {
+            if (!Objects.equals(vehicleRequest.getModelo(), vehicle.getModelo())) {
+                vehicle.setFabricante(vehicleRequest.getModelo());
+                isUpdateValid = true;
+            }
+        }
+
+        if (vehicleRequest.getAno() != null && vehicleRequest.getAno() >= 1901) {
+            if (!Objects.equals(vehicleRequest.getAno(), vehicle.getAnoFabricacao())) {
+                vehicle.setAnoFabricacao(vehicleRequest.getAno());
+                isUpdateValid = true;
+            }
+        }
+        return isUpdateValid;
+    }
+
     @Override
     public ResponseEntity<MaintenanceResponse> updateMaintenance(Integer maintenanceId, MaintenanceUpdateRequest request) {
         Optional<Maintenance> optionalMaintenance = vehicleRepository.findMaintenance(maintenanceId);
-        if (optionalMaintenance.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
+        if (optionalMaintenance.isEmpty()) return ResponseEntity.notFound().build();
 
         Maintenance maintenance = optionalMaintenance.get();
-        boolean isUpdateValid = maintenance.updateMaintenance(request);
+        boolean isUpdateValid = isUpdateMaintenanceValid(maintenance, request);
         if (isUpdateValid) {
             vehicleRepository.updateMaintenance(maintenance);
         }
         return  ResponseEntity.ok(MaintenanceMapper.toResponse(maintenance));
+    }
+
+    private boolean isUpdateMaintenanceValid(Maintenance maintenance, MaintenanceUpdateRequest updateRequest) {
+        boolean isUpdateValid = false;
+        if (updateRequest.getDescription() != null && !updateRequest.getDescription().isBlank()) {
+            if (!Objects.equals(updateRequest.getDescription(), maintenance.getDescricao())) {
+                maintenance.setDescricao(updateRequest.getDescription());
+                isUpdateValid = true;
+            }
+        }
+
+        if (updateRequest.getCost() != null && updateRequest.getCost() > 0.0) {
+            if (!Objects.equals(updateRequest.getCost(), maintenance.getCusto())) {
+                maintenance.setCusto(updateRequest.getCost());
+                isUpdateValid = true;
+            }
+        }
+
+        if (updateRequest.getAtiva() != null) {
+            if (updateRequest.getAtiva() != maintenance.getAtiva()) {
+                maintenance.setAtiva(updateRequest.getAtiva());
+                isUpdateValid = true;
+            }
+        }
+        return isUpdateValid;
     }
 }

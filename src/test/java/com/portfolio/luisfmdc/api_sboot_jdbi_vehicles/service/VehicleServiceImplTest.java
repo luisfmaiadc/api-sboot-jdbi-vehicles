@@ -155,7 +155,7 @@ class VehicleServiceImplTest {
     void notFoundVehicleFindMaintenanceByVehicleId() {
         when(vehicleRepository.findVehicle(1)).thenReturn(Optional.empty());
         ResponseEntity<List<MaintenanceResponse>> response = vehicleService.findMaintenanceByVehicleId(1);
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
 
     @Test
@@ -164,7 +164,6 @@ class VehicleServiceImplTest {
         VehicleRequest testeVehicleRequest = new VehicleRequest();
         testeVehicleRequest.setModelo("Ka");
         when(vehicleRepository.findVehicle(1)).thenReturn(Optional.of(testeVehicle));
-        when(testeVehicle.updateVehicle(testeVehicleRequest)).thenReturn(true);
 
         ResponseEntity<VehicleResponse> response = vehicleService.updateVehicle(1, testeVehicleRequest);
 
@@ -183,8 +182,8 @@ class VehicleServiceImplTest {
     @Test
     void notValidUpdateVehicle() {
         Vehicle testeVehicle = mock(Vehicle.class);
+        testeVehicle.setFabricante("Ford");
         when(vehicleRepository.findVehicle(1)).thenReturn(Optional.of(testeVehicle));
-        when(testeVehicle.updateVehicle(vehicleRequest)).thenReturn(false);
 
         ResponseEntity<VehicleResponse> response = vehicleService.updateVehicle(1, vehicleRequest);
 
@@ -198,7 +197,6 @@ class VehicleServiceImplTest {
         MaintenanceUpdateRequest testeMaintenanceRequest = new MaintenanceUpdateRequest();
         testeMaintenanceRequest.setCost(40.00);
         when(vehicleRepository.findMaintenance(1)).thenReturn(Optional.of(testeMaintenance));
-        when(testeMaintenance.updateMaintenance(testeMaintenanceRequest)).thenReturn(true);
 
         ResponseEntity<MaintenanceResponse> response = vehicleService.updateMaintenance(1, testeMaintenanceRequest);
 
@@ -217,7 +215,6 @@ class VehicleServiceImplTest {
     void notValidUpdateMaintenance() {
         Maintenance testeMaintenance = mock(Maintenance.class);
         when(vehicleRepository.findMaintenance(1)).thenReturn(Optional.of(testeMaintenance));
-        when(testeMaintenance.updateMaintenance(new MaintenanceUpdateRequest())).thenReturn(false);
 
         ResponseEntity<MaintenanceResponse> response = vehicleService.updateMaintenance(1, new MaintenanceUpdateRequest());
 
