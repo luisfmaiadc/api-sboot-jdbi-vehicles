@@ -140,6 +140,43 @@ paths:
               schema:
                 $ref: '#/components/schemas/MaintenanceResponse'
 
+  /vehicles/maintenances/workshop:
+    get:
+      summary: Obter oficinas disponíveis por filtro
+      operationId: findWorkshop
+      tags:
+        - Maintenance
+      parameters:
+        - name: cidade
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: estado
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: especialidade
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: fabricante
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Lista de Oficinas ativas por filtros
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/WorkshopResponse'
+
     put:
       summary: Atualizar informações de uma manutenção
       operationId: updateMaintenance
@@ -237,5 +274,46 @@ components:
         cost:
           type: number
           format: double
+        ativa:
+          type: boolean
+    WorkshopResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        nome:
+          type: string
+        cnpj:
+          type: string
+        cidade:
+          type: string
+        estado:
+          type: string
+        ativa:
+          type: boolean
+        fabricante:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkshopManufacturerResponse'
+        especialidade:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkshopSpecialtyResponse'
+    WorkshopSpecialtyResponse:
+      type: object
+      properties:
+        idEspecialidade:
+          type: integer
+        especialidade:
+          type: string
+        ativa:
+          type: boolean
+    WorkshopManufacturerResponse:
+      type: object
+      properties:
+        idFabricante:
+          type: integer
+        fabricante:
+          type: string
         ativa:
           type: boolean

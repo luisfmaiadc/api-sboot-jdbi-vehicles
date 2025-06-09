@@ -6,9 +6,16 @@ import com.portfolio.luisfmdc.api_sboot_jdbi_vehicles.model.Maintenance;
 import com.portfolio.luisfmdc.api_sboot_jdbi_vehicles.model.Vehicle;
 import com.portfolio.luisfmdc.api_sboot_jdbi_vehicles.repository.VehicleRepository;
 import com.portfolio.luisfmdc.model.*;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 import java.util.Objects;
@@ -18,9 +25,11 @@ import java.util.Optional;
 public class VehicleServiceImpl implements VehicleService {
 
     private final VehicleRepository vehicleRepository;
+    private final RestTemplate workshopRestTemplate;
 
-    public VehicleServiceImpl(VehicleRepository vehicleRepository) {
+    public VehicleServiceImpl(VehicleRepository vehicleRepository, @Qualifier("workshopRestTemplate") RestTemplate workshopRestTemplate) {
         this.vehicleRepository = vehicleRepository;
+        this.workshopRestTemplate = workshopRestTemplate;
     }
 
     @Override
@@ -155,5 +164,38 @@ public class VehicleServiceImpl implements VehicleService {
             }
         }
         return isUpdateValid;
+    }
+
+    @Override
+    public ResponseEntity<List<WorkshopResponse>> findWorkshop(String cidade, String estado, String especialidade, String fabricante) {
+        try {
+            MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+            addQueryParam(params, "cidade", cidade);
+            addQueryParam(params, "estado", estado);
+            addQueryParam(params, "especialidade", especialidade);
+            addQueryParam(params, "fabricante", fabricante);
+
+            if (params.isEmpty()) return ResponseEntity.badRequest().build();
+
+            String uri = UriComponentsBuilder
+                    .fromPath("/workshop")
+                    .queryParams(params)
+                    .build()
+                    .toUriString();
+
+            ResponseEntity<WorkshopResponse[]> response = workshopRestTemplate.getForEntity(uri, WorkshopResponse[].class);
+            if (response.getBody() == null) return ResponseEntity.noContent().build();
+            return ResponseEntity.ok(List.of(response.getBody()));
+        } catch (HttpClientErrorException.NotFound e) {
+            return ResponseEntity.notFound().build();
+        } catch (RestClientException e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    private void addQueryParam(MultiValueMap<String, String> params, String key, String value) {
+        if (value != null && !value.isBlank()) {
+            params.add(key, value);
+        }
     }
 }
