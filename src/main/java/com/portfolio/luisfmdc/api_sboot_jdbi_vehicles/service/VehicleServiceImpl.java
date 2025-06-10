@@ -1,9 +1,13 @@
 package com.portfolio.luisfmdc.api_sboot_jdbi_vehicles.service;
 
 import com.portfolio.luisfmdc.api_sboot_jdbi_vehicles.mapper.MaintenanceMapper;
+import com.portfolio.luisfmdc.api_sboot_jdbi_vehicles.mapper.SpecialtyMapper;
 import com.portfolio.luisfmdc.api_sboot_jdbi_vehicles.mapper.VehicleMapper;
+import com.portfolio.luisfmdc.api_sboot_jdbi_vehicles.mapper.WorkshopMapper;
 import com.portfolio.luisfmdc.api_sboot_jdbi_vehicles.model.Maintenance;
+import com.portfolio.luisfmdc.api_sboot_jdbi_vehicles.model.Specialty;
 import com.portfolio.luisfmdc.api_sboot_jdbi_vehicles.model.Vehicle;
+import com.portfolio.luisfmdc.api_sboot_jdbi_vehicles.model.Workshop;
 import com.portfolio.luisfmdc.api_sboot_jdbi_vehicles.repository.VehicleRepository;
 import com.portfolio.luisfmdc.model.*;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -17,9 +21,7 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class VehicleServiceImpl implements VehicleService {
@@ -42,7 +44,7 @@ public class VehicleServiceImpl implements VehicleService {
 
     @Override
     public ResponseEntity<MaintenanceResponse> registerMaintenance(Integer vehicleId, MaintenanceRequest maintenanceRequest) {
-        boolean isRegisterMaintenanceValid = isRegisterMaintenanceValid(vehicleId);
+        boolean isRegisterMaintenanceValid = isRegisterMaintenanceValid(vehicleId, maintenanceRequest);
         if (!isRegisterMaintenanceValid) return ResponseEntity.badRequest().build();
 
         Maintenance maintenance = MaintenanceMapper.toEntity(vehicleId, maintenanceRequest);
@@ -52,10 +54,25 @@ public class VehicleServiceImpl implements VehicleService {
         return ResponseEntity.status(HttpStatus.CREATED).body(MaintenanceMapper.toResponse(maintenance));
     }
 
-    private boolean isRegisterMaintenanceValid(Integer vehicleId) {
+    private boolean isRegisterMaintenanceValid(Integer vehicleId, MaintenanceRequest maintenanceRequest) {
         Optional<Vehicle> optionalVeiculo = vehicleRepository.findVehicle(vehicleId);
         if (optionalVeiculo.isEmpty()) return false;
-        return !vehicleRepository.activeMaintenance(vehicleId);
+
+        Optional<Specialty> optionalSpecialty = findSpecialty(maintenanceRequest.getSpecialtyId());
+        if (optionalSpecialty.isEmpty()) return false;
+
+        if (vehicleRepository.activeMaintenance(vehicleId)) return false;
+
+        Specialty specialty = optionalSpecialty.get();
+        Vehicle vehicle = optionalVeiculo.get();
+
+        return isWorkshopValid(specialty.getEspecialidade(), vehicle.getFabricante(), maintenanceRequest.getWorkshopId());
+    }
+
+    private boolean isWorkshopValid(String especialidade, String fabricante, Integer workshopId) {
+        var response = findWorkshop(null, null, especialidade, fabricante);
+        List<Workshop> workshopList = (response.getBody() != null) ? WorkshopMapper.toEntityList(response.getBody()) : new ArrayList<>();
+        return workshopList.stream().anyMatch(workshop -> workshop.getId().equals(workshopId));
     }
 
     @Override
@@ -190,6 +207,21 @@ public class VehicleServiceImpl implements VehicleService {
             return ResponseEntity.notFound().build();
         } catch (RestClientException e) {
             return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    private Optional<Specialty> findSpecialty(Integer specialtyId) {
+        try {
+            String uri = UriComponentsBuilder
+                    .fromPath("/workshop/specialty/{specialtyId}")
+                    .buildAndExpand(specialtyId)
+                    .toUriString();
+
+            ResponseEntity<WorkshopSpecialtyResponse> response = workshopRestTemplate.getForEntity(uri, WorkshopSpecialtyResponse.class);
+            if (response.getBody() == null) return Optional.empty();
+            return Optional.of(SpecialtyMapper.toEntity(response.getBody()));
+        } catch (Exception e) {
+            return Optional.empty();
         }
     }
 

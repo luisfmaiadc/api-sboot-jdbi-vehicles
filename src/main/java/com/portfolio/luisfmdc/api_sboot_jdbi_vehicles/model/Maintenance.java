@@ -13,13 +13,15 @@ public class Maintenance {
 
     private Integer id;
     private Integer idVeiculo;
+    private Integer idOficina;
     private String descricao;
     private Double custo;
     private LocalDate dataManutencao;
     private Boolean ativa;
 
-    public Maintenance(Integer idVeiculo, String descricao, Double custo, LocalDate dataManutencao) {
+    public Maintenance(Integer idVeiculo, Integer idOficina, String descricao, Double custo, LocalDate dataManutencao) {
         this.idVeiculo = idVeiculo;
+        this.idOficina = idOficina;
         this.descricao = descricao;
         this.custo = custo;
         this.dataManutencao = dataManutencao;

@@ -237,20 +237,28 @@ components:
     MaintenanceRequest:
       type: object
       required:
+        - specialtyId
         - description
         - cost
+        - workshopId
       properties:
+        specialtyId:
+          type: integer
         description:
           type: string
         cost:
           type: number
           format: double
+        workshopId:
+          type: integer
     MaintenanceResponse:
       type: object
       properties:
         id:
           type: integer
         idVeiculo:
+          type: integer
+        idOficina:
           type: integer
         descricao:
           type: string

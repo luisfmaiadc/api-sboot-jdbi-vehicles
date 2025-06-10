@@ -11,6 +11,7 @@ public class MaintenanceMapper {
     public static Maintenance toEntity(Integer vehicleId, MaintenanceRequest request) {
         return new Maintenance(
                 vehicleId,
+                request.getWorkshopId(),
                 request.getDescription(),
                 request.getCost(),
                 LocalDate.now()
@@ -21,6 +22,7 @@ public class MaintenanceMapper {
         return new MaintenanceResponse()
                 .id(maintenance.getId())
                 .idVeiculo(maintenance.getIdVeiculo())
+                .idOficina(maintenance.getIdOficina())
                 .descricao(maintenance.getDescricao())
                 .custo(maintenance.getCusto())
                 .data(maintenance.getDataManutencao())
