@@ -15,8 +15,8 @@ import javax.sql.DataSource;
 @Configuration
 public class ApiConfig {
 
-    @Value("${workshop.service.url}")
-    private String workshopServiceUrl;
+    @Value("${orch.service.url}")
+    private String orchServiceUrl;
 
     @Bean
     public Jdbi jdbi(DataSource dataSource) {
@@ -31,8 +31,8 @@ public class ApiConfig {
     }
 
     @Bean
-    @Qualifier("workshopRestTemplate")
-    public RestTemplate workshopRestTemplate(RestTemplateBuilder builder) {
-        return builder.rootUri(workshopServiceUrl).build();
+    @Qualifier("orchRestTemplate")
+    public RestTemplate orchRestTemplate(RestTemplateBuilder builder) {
+        return builder.rootUri(orchServiceUrl).build();
     }
 }

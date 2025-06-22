@@ -27,11 +27,11 @@ import java.util.*;
 public class VehicleServiceImpl implements VehicleService {
 
     private final VehicleRepository vehicleRepository;
-    private final RestTemplate workshopRestTemplate;
+    private final RestTemplate orchRestTemplate;
 
-    public VehicleServiceImpl(VehicleRepository vehicleRepository, @Qualifier("workshopRestTemplate") RestTemplate workshopRestTemplate) {
+    public VehicleServiceImpl(VehicleRepository vehicleRepository, @Qualifier("orchRestTemplate") RestTemplate orchRestTemplate) {
         this.vehicleRepository = vehicleRepository;
-        this.workshopRestTemplate = workshopRestTemplate;
+        this.orchRestTemplate = orchRestTemplate;
     }
 
     @Override
@@ -195,12 +195,12 @@ public class VehicleServiceImpl implements VehicleService {
             if (params.isEmpty()) return ResponseEntity.badRequest().build();
 
             String uri = UriComponentsBuilder
-                    .fromPath("/workshop")
+                    .fromPath("/workshops")
                     .queryParams(params)
                     .build()
                     .toUriString();
 
-            ResponseEntity<WorkshopResponse[]> response = workshopRestTemplate.getForEntity(uri, WorkshopResponse[].class);
+            ResponseEntity<WorkshopResponse[]> response = orchRestTemplate.getForEntity(uri, WorkshopResponse[].class);
             if (response.getBody() == null) return ResponseEntity.noContent().build();
             return ResponseEntity.ok(List.of(response.getBody()));
         } catch (HttpClientErrorException.NotFound e) {
@@ -213,11 +213,11 @@ public class VehicleServiceImpl implements VehicleService {
     private Optional<Specialty> findSpecialty(Integer specialtyId) {
         try {
             String uri = UriComponentsBuilder
-                    .fromPath("/workshop/specialty/{specialtyId}")
+                    .fromPath("/workshops/specialty/{specialtyId}")
                     .buildAndExpand(specialtyId)
                     .toUriString();
 
-            ResponseEntity<WorkshopSpecialtyResponse> response = workshopRestTemplate.getForEntity(uri, WorkshopSpecialtyResponse.class);
+            ResponseEntity<WorkshopSpecialtyResponse> response = orchRestTemplate.getForEntity(uri, WorkshopSpecialtyResponse.class);
             if (response.getBody() == null) return Optional.empty();
             return Optional.of(SpecialtyMapper.toEntity(response.getBody()));
         } catch (Exception e) {
