@@ -10,16 +10,36 @@
 
 <p align="center">O <b>api-sboot-jdbi-vehicles</b> é uma API REST desenvolvida em Java com Spring Boot para gerenciar veículos e suas manutenções. O sistema permite o cadastro, atualização e consulta de veículos e suas respectivas manutenções, com estrutura relacional entre as entidades.</p>
 
-<h2>📌 Visão Geral</h2> <p align="justify">Este projeto utiliza a abordagem <b>Contract First</b>, com a especificação OpenAPI servindo como base para geração das classes de request e response via Swagger Codegen. A persistência dos dados é feita com o MySQL, e o controle de versionamento do banco é gerenciado com Flyway. A manipulação dos dados é feita por meio da biblioteca <b>JDBI</b>.</p>
+<h2>📌 Visão Geral</h2> <p align="justify">Este projeto utiliza a abordagem <b>Contract First</b>, com a especificação OpenAPI servindo como base para geração das classes de request e response via Swagger Codegen. A persistência dos dados é feita com o MySQL, e o controle de versionamento do banco é gerenciado com Flyway. A manipulação dos dados é realizada por meio da biblioteca <b>JDBI</b>.</p>
+
+<p>Além disso, o projeto foi expandido para um ecossistema maior, incluindo:</p>
+
+- Componente de Orquestração desenvolvido com <b>Apache Camel</b>, responsável pela integração entre serviços.
+- API de Oficinas, desenvolvida em Java e Spring Boot, focada na gestão de oficinas mecânicas.
+
+Essa arquitetura proporciona desacoplamento entre serviços, facilitando manutenção e evolução futura.
 
 <h2>🚀 Tecnologias Utilizadas</h2>
 
 - <b>Java 21 + Spring Boot 3.4.5</b>
 - <b>Spring Web</b>
-- <b>JDBI</b> (para acesso ao banco de dados)
+- <b>RestTemplate</b> (realização de chamadas HTTP entre aplicações)
+- <b>JDBI</b> (acesso ao banco de dados relacional)
 - <b>MySQL</b> (persistência dos dados)
-- <b>Flyway</b> (versionamento do banco)
-- <b>OpenAPI + Swagger Codegen</b> (geração de contratos)
+- <b>Flyway</b> (controle de versionamento do banco)
+- <b>OpenAPI + Swagger Codegen</b> (geração de contratos a partir de especificações)
+
+<h2>🏛️ Arquitetura do Sistema</h2>
+
+```bash
+    1. [Cliente/API Consumers] --> HTTP (api-sboot-jdbi-vehicles)
+    2. [api-sboot-jdbi-vehicles] --> HTTP (api-sboot-camel-vehicle)
+    3. [api-sboot-camel-vehicle] --> HTTP (api-sboot-jdbi-workshops)
+```
+
+- api-sboot-jdbi-vehicles → Responsável por veículos e manutenções.
+- api-sboot-camel-vehicle → Camada de orquestração utilizando Apache Camel.
+- api-sboot-jdbi-workshops → API independente que gerencia oficinas e serviços.
 
 <h2>🏗️ Estrutura do Projeto</h2>
 
@@ -53,8 +73,8 @@ vehicle-maintenance-api
 ```properties
 spring.application.name=api-sboot-jdbi-vehicles
 spring.datasource.url=jdbc:mysql://localhost:3306/dbVeiculos?createDatabaseIfNotExist=true
-spring.datasource.username=seuUsuaruio
-spring.datasource.password=suaSenha
+spring.datasource.username=SEU_USUARIO
+spring.datasource.password=SUA_SENHA
 ```
 
 <h3>🚀 Executando a API</h3>
@@ -67,23 +87,10 @@ mvn clean install
 mvn spring-boot:run
 ```
 
-<h2>📡 Endpoints da Aplicação</h2>
-
-| Método | Endpoint | Descrição |
-|     :---     |     :---      |      :---     |
-| POST         | <code>/vehicles</code>                              | Cadastra um novo veículo                           | 
-| GET          | <code>/vehicles/{vehicleId}</code>                  | Obter informações de um veículo                    |
-| PUT          | <code>/vehicles/{vehicleId}</code>                  | Atualizar informações de um veículo                |
-| POST         | <code>/vehicles/{vehicleId}/maintenances</code>     | Registra uma nova manutenção para um veículo       |
-| GET          | <code>/vehicles/{vehicleId}/maintenances</code>     | Pesquisa manutenções por veículo                   |
-| GET          | <code>/vehicles/maintenances/{maintenanceId}</code> | Obter informações de uma manutenção                |
-| PUT          | <code>/vehicles/maintenances/{maintenanceId}</code> | Atualizar informações de uma manutenção            |
-
 <h2>🧩 OpenAPI / Contract First</h2>
 
-O contrato OpenAPI está definido em <code>resources/openapi.yml</code>.
-As classes de request e response são geradas automaticamente utilizando <b>Swagger Codegen</b> com base nesse contrato.
+<p>O contrato OpenAPI está definido em <code>resources/openapi.yml</code>. As classes de request e response são geradas automaticamente utilizando <b>Swagger Codegen</b> com base nesse contrato.</p>
 
 <h2>📚 Mais Informações</h2>
 
-<p>Este projeto foi desenvolvido com fins didáticos, com o objetivo de explorar práticas modernas como o uso do JDBI, OpenAPI (Contract First), versionamento com Flyway e integração com banco relacional MySQL utilizando Java 21 e Spring Boot 3.4.5.</p>
+<p>Este projeto foi desenvolvido com fins didáticos e evolutivos, com o objetivo de explorar práticas modernas como o uso do JDBI, OpenAPI (Contract First), versionamento com Flyway, integração entre serviços REST via Apache Camel e uma arquitetura orientada a microsserviços utilizando Java 21 e Spring Boot.</p>
